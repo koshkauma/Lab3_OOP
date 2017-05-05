@@ -6,7 +6,7 @@ using System.Drawing;
 
 namespace lab_3.Classes.ForEyes
 {
-    public class EyesProduct: CosmeticProduct
+    public abstract class EyesProduct: CosmeticProduct
     {
        public bool IsWaterproof { get; set; }
 
@@ -15,6 +15,9 @@ namespace lab_3.Classes.ForEyes
             this.IsWaterproof = IsWaterproof;
        }
 
+
+        public EyesProduct(int classIndex): base(classIndex)
+        { }
 
     }
 }

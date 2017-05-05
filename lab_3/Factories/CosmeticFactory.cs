@@ -61,18 +61,57 @@ namespace lab_3.Factories
             return labelToCreate;
         }
 
-        public ComboBox GetComboBox(string name, Size size, Point location, int tabIndex, Type enumType)
+        public class Item
+        {
+            public string NameToShow { get; set; }
+            public string Value { get; set; }
+            public Item(string NameToShow, string Value)
+            {
+                this.NameToShow = NameToShow;
+                this.Value = Value;
+            }
+        }
+
+        //for debug
+        private void ListBox1_SelectedValueChanged(object sender, EventArgs e)
+        {
+            ComboBox someObj = (ComboBox)sender;
+            MessageBox.Show(someObj.SelectedValue.ToString());
+           
+        }
+        //
+        public ComboBox GetComboBox(string name, Size size, Point location, int tabIndex, List<string> names, List<string> values)
         {
             ComboBox comboBoxToCreate = new ComboBox();
             comboBoxToCreate.Name = name;
-            comboBoxToCreate.Size = size;
             comboBoxToCreate.TabIndex = tabIndex;
-            comboBoxToCreate.Items.AddRange(Enum.GetNames(enumType));
-            comboBoxToCreate.SelectedIndex = 0;
+
+           // string[] listOfValues = Enum.GetNames(someEnumType);
+            int len = values.Count;
+            List<Item> dataSource = new List<Item>();
+        
+            for (int i = 0; i < len; i++)
+            {
+                dataSource.Add(new Item(names[i], values[i]));
+            //    MessageBox.Show(names[i] + listOfValues[i]);
+            }
+            
+            comboBoxToCreate.DataSource = dataSource;
+            comboBoxToCreate.DisplayMember = "NameToShow";
+            comboBoxToCreate.ValueMember = "Value";
+
             comboBoxToCreate.Location = location;
             comboBoxToCreate.DropDownStyle = ComboBoxStyle.DropDownList;
+           // comboBoxToCreate.SelectedIndex = 0;
+            //     MessageBox.Show(comboBoxToCreate.SelectedItem.ToString());
+
+
+            //for debug
+           // comboBoxToCreate.SelectedValueChanged += ListBox1_SelectedValueChanged;
+            //for debug
             return comboBoxToCreate;
         }
+
          //??????????????????
         private void buttonColor_Click(object sender, EventArgs e)
         {
@@ -95,6 +134,17 @@ namespace lab_3.Factories
             return buttonToCreate;
         }
 
+        public CheckBox GetCheckBox(string name, Size size, Point location, int tabIndex)
+        {
+            CheckBox result = new CheckBox();
+            result.Name = name;
+            result.Size = size;
+            result.Location = location;
+            result.TabIndex = tabIndex;
+            result.Checked = true;
+            return result;
+        }
+
         public virtual List<Control> GetListControl(Size size, int leftCoord)
         {
             List<Control> resultList = new List<Control>();
@@ -103,16 +153,16 @@ namespace lab_3.Factories
             resultList.Add(GetTextBox("productName", size, new Point(leftCoord, 30), 2, TextBoxString_KeyPress));
      
 
-            resultList.Add(GetLabel("brand", "Бренд", size, new Point(leftCoord, 55), 3));
-            resultList.Add(GetTextBox("brand", size, new Point(leftCoord, 70), 4, TextBoxString_KeyPress));
-     
+            resultList.Add(GetLabel("brand", "Бренд", size, new Point(leftCoord, 60), 3));
+            resultList.Add(GetTextBox("brand", size, new Point(leftCoord, 80), 4, TextBoxString_KeyPress));
 
-            resultList.Add(GetLabel("priceCategory", "Ценовая категория", size, new Point(leftCoord, 95), 5));
-            resultList.Add(GetComboBox("priceCategory", size, new Point(leftCoord, 110), 6, CosmeticProduct.PriceCategory.lux.GetType()));
-      
+            List<string> namesOfItems = EnumHelper<CosmeticProduct.PriceCategory>.GetAllDescriptions();
+            List<string> values = EnumHelper<CosmeticProduct.PriceCategory>.GetEnumValues();
+            resultList.Add(GetLabel("priceCategory", "Ценовая категория", size, new Point(leftCoord, 110), 5));
+            resultList.Add(GetComboBox("priceCategory", size, new Point(leftCoord, 130), 6, namesOfItems, values));
 
-            resultList.Add(GetLabel("color", "Цвет", size, new Point(leftCoord, 135), 7));
-            resultList.Add(GetPaletteButton("colorButton", new Size(50, 30), new Point(leftCoord, 150), 8, buttonColor_Click));
+            resultList.Add(GetLabel("color", "Цвет", size, new Point(leftCoord, 160), 7));
+            resultList.Add(GetPaletteButton("colorButton", new Size(50, 30), new Point(leftCoord, 180), 8, buttonColor_Click));
 
             return resultList;
         }
@@ -140,7 +190,8 @@ namespace lab_3.Factories
             {
                 currentProduct.ProductName = controlList[nameIndex].Text;
                 currentProduct.Brand = controlList[brandIndex].Text;
-                currentProduct.PriceCategoryOfProduct = (CosmeticProduct.PriceCategory)Enum.Parse(typeof(CosmeticProduct.PriceCategory), controlList[priceCategoryIndex].Text);
+                ComboBox temp = (ComboBox)controlList[priceCategoryIndex];
+                currentProduct.PriceCategoryOfProduct = (CosmeticProduct.PriceCategory)Enum.Parse(typeof(CosmeticProduct.PriceCategory), temp.SelectedValue.ToString());
                 currentProduct.Color = controlList[colorButtonIndex].BackColor;
             }
             catch
@@ -155,8 +206,11 @@ namespace lab_3.Factories
             Control[] controlList = GetComponentsForInput(controls);
             controlList[nameIndex].Text = Convert.ToString(currentProduct.ProductName);
             controlList[brandIndex].Text = Convert.ToString(currentProduct.Brand);
-            controlList[priceCategoryIndex].Text = Enum.GetName(typeof(CosmeticProduct.PriceCategory), currentProduct.PriceCategoryOfProduct);
 
+            ComboBox temp = (ComboBox)controlList[priceCategoryIndex];
+            temp.SelectedValue = Enum.GetName(typeof(CosmeticProduct.PriceCategory), currentProduct.PriceCategoryOfProduct);
+          
+            controlList[colorButtonIndex].BackColor = currentProduct.Color;
         }
 
 

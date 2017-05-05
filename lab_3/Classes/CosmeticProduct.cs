@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Drawing;
+using System.ComponentModel;
 
 namespace lab_3.Classes
 {
@@ -11,7 +12,15 @@ namespace lab_3.Classes
     {
         public string ProductName { get; set; }
         public string Brand { get; set; }
-        public enum PriceCategory { massMarket, lux, professional};
+        public enum PriceCategory
+        {
+           [Description("Масс-маркет")]
+           massMarket,
+           [Description("Люкс")]
+           lux,
+           [Description("Профессиональная")]
+           professional
+        };
         public PriceCategory PriceCategoryOfProduct { get; set; }
         public Color Color { get; set; }
 

@@ -56,8 +56,20 @@
     <Compile Include="Classes\ForLips\LipProduct.cs" />
     <Compile Include="Classes\ForLips\Lipstick.cs" />
     <Compile Include="Classes\ForNails\NailPolish.cs" />
+    <Compile Include="CosmeticListClass.cs" />
+    <Compile Include="EnumHelp.cs" />
     <Compile Include="Factories\AllProductsFactory.cs" />
     <Compile Include="Factories\CosmeticFactory.cs" />
+    <Compile Include="Factories\EyesFactories\EyesFactory.cs" />
+    <Compile Include="Factories\EyesFactories\EyeshadowFactory.cs" />
+    <Compile Include="Factories\EyesFactories\MascaraFactory.cs" />
+    <Compile Include="Factories\FaceFactories\FaceProductFactory.cs" />
+    <Compile Include="Factories\FaceFactories\FoundationFactory.cs" />
+    <Compile Include="Factories\FaceFactories\PowderFactory.cs" />
+    <Compile Include="Factories\LipFactories\LipglossFactory.cs" />
+    <Compile Include="Factories\LipFactories\LipPencilFactory.cs" />
+    <Compile Include="Factories\LipFactories\LipProductFactory.cs" />
+    <Compile Include="Factories\LipFactories\LipstickFactory.cs" />
     <Compile Include="Factories\NailFactories\NailPolishFactory.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>

@@ -18,31 +18,46 @@ namespace lab_3.Factories.NailFactories
             Object obj = new Object();
             obj = "Лак для ногтей";
             return obj;
-       }
+        }
 
         public override List<Control> GetListControl(Size size, int leftCoord)
         {
             List<Control> resultList = base.GetListControl(size, leftCoord);
          
-            resultList.Add(GetLabel("durability", "Заявленное кол-во дней носки", size, new Point(leftCoord, 185), 9));
-            resultList.Add(GetTextBox("durability", size, new Point(leftCoord, 205), 10, TextBoxDigits_KeyPress));
-     
-            resultList.Add(GetLabel("effect", "Специальный эффект лака", size, new Point(leftCoord, 230), 11));
-            resultList.Add(GetComboBox("effect", size, new Point(leftCoord, 250), 12, NailPolish.TypesOfEffects.crack.GetType()));
+            resultList.Add(GetLabel("durability", "Заявленное кол-во дней носки", size, new Point(leftCoord, 215), 9));
+            resultList.Add(GetTextBox("durability", size, new Point(leftCoord, 235), 10, TextBoxDigits_KeyPress));
+
+            List<string> values = EnumHelper<NailPolish.TypesOfEffects>.GetEnumValues();
+            List<string> namesOfEffects = EnumHelper<NailPolish.TypesOfEffects>.GetAllDescriptions();
+            resultList.Add(GetLabel("effect", "Специальный эффект лака", size, new Point(leftCoord, 260), 11));
+            resultList.Add(GetComboBox("effect", size, new Point(leftCoord, 280), 12, namesOfEffects, values));
 
             return resultList;
+        }
+
+
+        public override void LoadDataToComponets(CosmeticProduct currentProduct, Control.ControlCollection controls)
+        {
+            base.LoadDataToComponets(currentProduct, controls);
+            Control[] controlList = GetComponentsForInput(controls);
+            NailPolish currentNailPolish = (NailPolish)currentProduct;
+            controlList[durabilityIndex].Text = Convert.ToString(currentNailPolish.Durability);
+
+            ComboBox temp = (ComboBox)controlList[effectIndex];
+            temp.SelectedValue = Enum.GetName(typeof(NailPolish.TypesOfEffects), currentNailPolish.SpecialEffect);
         }
 
 
         public override void GetDataFromComponents(CosmeticProduct currentProduct, Control.ControlCollection controls)
         {
             base.GetDataFromComponents(currentProduct, controls);
-
             Control[] controlList = GetComponentsForInput(controls);
             NailPolish currentNailPolish = (NailPolish)currentProduct;
-            controlList[durabilityIndex].Text = Convert.ToString(currentNailPolish.Durability);
-            controlList[effectIndex].Text = Convert.ToString(currentNailPolish.SpecialEffect);
+            currentNailPolish.Durability = Convert.ToInt32(controlList[durabilityIndex].Text);
+            ComboBox temp = (ComboBox)controlList[effectIndex];
+            currentNailPolish.SpecialEffect = (NailPolish.TypesOfEffects)Enum.Parse(typeof(NailPolish.TypesOfEffects), temp.SelectedValue.ToString());
         }
+
 
         public override CosmeticProduct GetSomeCosmeticProduct(int index)
         {

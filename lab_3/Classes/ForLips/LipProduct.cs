@@ -6,9 +6,8 @@ using System.Text;
 
 namespace lab_3.Classes
 {
-    public class LipProduct: CosmeticProduct
+    public abstract class LipProduct: CosmeticProduct
     {
-         
         public string Aromatizer { get; set; }
 
         public LipProduct(string ProductName,
@@ -18,5 +17,9 @@ namespace lab_3.Classes
             this.Aromatizer = Aromatizer;
             this.Color = Color;
         }
+
+
+        public LipProduct(int classIndex): base(classIndex)
+        { }
     }
 }
