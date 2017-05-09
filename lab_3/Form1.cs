@@ -13,6 +13,7 @@ namespace lab_3
 {
     public partial class serializeForm : Form
     {
+        const int listDisplayMemberIndex = 0;
         CosmeticListClass list = new CosmeticListClass();
        
         public serializeForm()
@@ -53,16 +54,24 @@ namespace lab_3
         private void buttonAdd_Click(object sender, EventArgs e)
         {
             CosmeticProduct temp = (CosmeticProduct)panelAdd.Tag;
-            try
+            if (factoryFormEditor.FactoryList[temp.ClassIndex].CheckTextBoxes(panelAdd.Controls))
             {
-                factoryFormEditor.FactoryList[temp.ClassIndex].GetDataFromComponents(temp, panelAdd.Controls);
+                try
+                {
+                    factoryFormEditor.FactoryList[temp.ClassIndex].GetDataFromComponents(temp, panelAdd.Controls);
+                }
+                catch
+                {
+                    MessageBox.Show("Введите корректные данные!");
+                    return;
+                }
+                panelAdd.Tag = factoryFormEditor.FactoryList[comboBoxItems.SelectedIndex].GetSomeCosmeticProduct(comboBoxItems.SelectedIndex);
+                list.CosmeticList.Add(temp);
             }
-            catch
+            else
             {
-                MessageBox.Show("Данные некорректны! Пожалуйста, повторите ввод");
+                MessageBox.Show("Заполните все поля!");
             }
-            panelAdd.Tag = panelAdd.Tag = factoryFormEditor.FactoryList[comboBoxItems.SelectedIndex].GetSomeCosmeticProduct(comboBoxItems.SelectedIndex);
-            list.CosmeticList.Add(temp);
         }
 
         private void listBoxOfProducts_SelectedIndexChanged(object sender, EventArgs e)
@@ -76,8 +85,86 @@ namespace lab_3
                 labelEdit.Text = comboBoxItems.Items[currentProduct.ClassIndex].ToString();
                 panelEdit.Tag = currentProduct;
             }
+        }
 
+        private void buttonEdit_Click(object sender, EventArgs e)
+        {
+            CosmeticProduct temp = (CosmeticProduct)panelEdit.Tag;
+            try
+            {
+                factoryFormEditor.FactoryList[temp.ClassIndex].GetDataFromComponents(temp, panelEdit.Controls);
 
+            }
+            catch
+            {
+                MessageBox.Show("Данные некорректны! Пожалуйста, повторите ввод");
+                return;
+            }
+            list.CosmeticList.ResetBindings();
+        }
+
+      
+        private void сериализоватьToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (listBoxOfProducts.Items.Count == 0)
+            {
+                MessageBox.Show("В списке ничего нет!");
+            }
+            else
+            {
+                if (saveFileDialog.ShowDialog() != DialogResult.Cancel)
+                { 
+                    list.SerializeItemsInList(saveFileDialog.FileName);
+                }
+
+            }
+        }
+
+        private void buttonDelete_Click(object sender, EventArgs e)
+        {
+            if (listBoxOfProducts.SelectedItem != null)
+            {
+                if (MessageBox.Show("Вы уверены?", "Внимание!", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                {
+                    CosmeticProduct temp = (CosmeticProduct)listBoxOfProducts.SelectedItem;
+                    list.CosmeticList.Remove(temp);
+                    panelEdit.Controls.Clear();
+                    labelEdit.Text = "";
+                }
+            }
+        }
+
+        private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+
+        }
+
+        private void десToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (openFileDialog.ShowDialog() != DialogResult.Cancel)
+            {
+                list.DeserializeItemsInList(openFileDialog.FileName, factoryFormEditor);
+            } 
+        }
+
+        private void openFileDialog_FileOk(object sender, CancelEventArgs e)
+        {
+
+        }
+
+        private void buttonClearList_Click(object sender, EventArgs e)
+        {
+            if (listBoxOfProducts.Items.Count != 0)
+            {
+                list.CosmeticList.Clear();
+                panelEdit.Controls.Clear();
+                labelEdit.Text = "";
+            }
+        }
+
+        private void выходToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
         }
     }
 }

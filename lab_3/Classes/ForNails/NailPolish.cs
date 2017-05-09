@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Drawing;
 using System.ComponentModel;
+using System.IO;
+
 namespace lab_3.Classes.ForNails
 {
     public class NailPolish: CosmeticProduct
@@ -39,6 +41,34 @@ namespace lab_3.Classes.ForNails
 
         public NailPolish(int classIndex): base(classIndex)
         { }
+
+
+        public override void SerializeObject(StreamWriter outputFile, char separator)
+        {
+            base.SerializeObject(outputFile, separator);
+
+            outputFile.Write(Durability);
+            outputFile.Write(separator);
+            outputFile.Write(SpecialEffect);
+            outputFile.Write(separator);
+        }
+
+        public override void DeserializeObject(List<string> data)
+        {
+            base.DeserializeObject(data);
+            try
+            {
+                Durability = Convert.ToInt32(data[currentItemList]);
+                data.RemoveAt(currentItemList);
+
+                SpecialEffect = (TypesOfEffects)Enum.Parse(typeof(TypesOfEffects), data[currentItemList]);
+                data.RemoveAt(currentItemList);
+            }
+            catch
+            {
+                throw new Exception();
+            }
+        }
 
     }
 }

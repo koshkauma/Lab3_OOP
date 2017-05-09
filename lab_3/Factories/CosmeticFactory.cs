@@ -6,9 +6,17 @@ using lab_3.Classes;
 
 namespace lab_3.Factories
 {
-    //TO DO:
-    //enums
-    //controls array to list
+    public class Item
+    {
+        public string NameToShow { get; set; }
+        public string Value { get; set; }
+        public Item(string NameToShow, string Value)
+        {
+            this.NameToShow = NameToShow;
+            this.Value = Value;
+        }
+    }
+
     public abstract class CosmeticFactory
     {
         const int backspaceCode = 8;
@@ -19,7 +27,6 @@ namespace lab_3.Factories
         const int colorButtonIndex = 3;
 
         public abstract object GetClassName();
-
 
         public void TextBoxString_KeyPress(object sender, KeyPressEventArgs e)
         {
@@ -60,40 +67,19 @@ namespace lab_3.Factories
             labelToCreate.TabIndex = tabIndex;
             return labelToCreate;
         }
-
-        public class Item
-        {
-            public string NameToShow { get; set; }
-            public string Value { get; set; }
-            public Item(string NameToShow, string Value)
-            {
-                this.NameToShow = NameToShow;
-                this.Value = Value;
-            }
-        }
-
-        //for debug
-        private void ListBox1_SelectedValueChanged(object sender, EventArgs e)
-        {
-            ComboBox someObj = (ComboBox)sender;
-            MessageBox.Show(someObj.SelectedValue.ToString());
-           
-        }
-        //
+       
         public ComboBox GetComboBox(string name, Size size, Point location, int tabIndex, List<string> names, List<string> values)
         {
             ComboBox comboBoxToCreate = new ComboBox();
             comboBoxToCreate.Name = name;
             comboBoxToCreate.TabIndex = tabIndex;
 
-           // string[] listOfValues = Enum.GetNames(someEnumType);
             int len = values.Count;
             List<Item> dataSource = new List<Item>();
         
             for (int i = 0; i < len; i++)
             {
                 dataSource.Add(new Item(names[i], values[i]));
-            //    MessageBox.Show(names[i] + listOfValues[i]);
             }
             
             comboBoxToCreate.DataSource = dataSource;
@@ -102,17 +88,9 @@ namespace lab_3.Factories
 
             comboBoxToCreate.Location = location;
             comboBoxToCreate.DropDownStyle = ComboBoxStyle.DropDownList;
-           // comboBoxToCreate.SelectedIndex = 0;
-            //     MessageBox.Show(comboBoxToCreate.SelectedItem.ToString());
-
-
-            //for debug
-           // comboBoxToCreate.SelectedValueChanged += ListBox1_SelectedValueChanged;
-            //for debug
             return comboBoxToCreate;
         }
-
-         //??????????????????
+        
         private void buttonColor_Click(object sender, EventArgs e)
         {
             ColorDialog colorDialog = new ColorDialog();
@@ -120,6 +98,7 @@ namespace lab_3.Factories
             {
                 Button buttonToChange = (Button)sender;
                 buttonToChange.BackColor = colorDialog.Color;
+           
             }
         }
 
@@ -186,20 +165,13 @@ namespace lab_3.Factories
         public virtual void GetDataFromComponents(CosmeticProduct currentProduct, Control.ControlCollection controls)
         {
             Control[] controlList = GetComponentsForInput(controls);
-            try
-            {
-                currentProduct.ProductName = controlList[nameIndex].Text;
-                currentProduct.Brand = controlList[brandIndex].Text;
-                ComboBox temp = (ComboBox)controlList[priceCategoryIndex];
-                currentProduct.PriceCategoryOfProduct = (CosmeticProduct.PriceCategory)Enum.Parse(typeof(CosmeticProduct.PriceCategory), temp.SelectedValue.ToString());
-                currentProduct.Color = controlList[colorButtonIndex].BackColor;
-            }
-            catch
-            {
-                MessageBox.Show("Проверьте данные на корректность!");
-                throw new Exception();
-            }
+            currentProduct.ProductName = controlList[nameIndex].Text;
+            currentProduct.Brand = controlList[brandIndex].Text;
+            ComboBox temp = (ComboBox)controlList[priceCategoryIndex];
+            currentProduct.PriceCategoryOfProduct = (CosmeticProduct.PriceCategory)Enum.Parse(typeof(CosmeticProduct.PriceCategory), temp.SelectedValue.ToString());
+            currentProduct.Color = controlList[colorButtonIndex].BackColor;
         }
+
 
         public virtual void LoadDataToComponets(CosmeticProduct currentProduct, Control.ControlCollection controls)
         {
@@ -212,7 +184,25 @@ namespace lab_3.Factories
           
             controlList[colorButtonIndex].BackColor = currentProduct.Color;
         }
-
+        
+        public virtual bool CheckTextBoxes(Control.ControlCollection controlList)
+        {
+            bool result = true;
+            int i = 0;
+            while (result && i < controlList.Count)
+            {
+                if (controlList[i] is TextBox)
+                {
+                    if (controlList[i].Text == "")
+                    {
+                        result = false;
+                        break;
+                    }
+                }
+                i++;
+            }
+            return result;
+        }
 
     }
 }

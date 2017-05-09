@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Drawing;
 using System.ComponentModel;
+using System.IO;
 
 namespace lab_3.Classes.ForFace
 {
@@ -41,5 +42,32 @@ namespace lab_3.Classes.ForFace
 
         public FaceProduct(int classIndex): base(classIndex)
         { }
+
+
+        public override void SerializeObject(StreamWriter outputFile, char separator)
+        {
+            base.SerializeObject(outputFile, separator);
+
+            outputFile.Write(TypeOfSkin);
+            outputFile.Write(separator);
+            outputFile.Write(Finish);
+            outputFile.Write(separator);
+        }
+
+        public override void DeserializeObject(List<string> data)
+        {
+            base.DeserializeObject(data);
+            try
+            {
+                TypeOfSkin = (SkinType)Enum.Parse(typeof(SkinType), data[currentItemList]);
+                data.RemoveAt(currentItemList);
+                Finish = (TypeOfFinish)Enum.Parse(typeof(TypeOfFinish), data[currentItemList]);
+                data.RemoveAt(currentItemList);
+            }
+            catch
+            {
+                throw new Exception();
+            }
+        }
     }
 }

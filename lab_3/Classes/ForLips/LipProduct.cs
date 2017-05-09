@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.IO;
 
 namespace lab_3.Classes
 {
@@ -21,5 +22,30 @@ namespace lab_3.Classes
 
         public LipProduct(int classIndex): base(classIndex)
         { }
+
+
+        public override void SerializeObject(StreamWriter outputFile, char separator)
+        {
+            base.SerializeObject(outputFile, separator);
+
+            outputFile.Write(Aromatizer);
+            outputFile.Write(separator);
+        }
+
+
+        public override void DeserializeObject(List<string> data)
+        {
+            base.DeserializeObject(data);
+            try
+            {
+                Aromatizer = data[currentItemList];
+                data.RemoveAt(currentItemList);
+            }
+            catch
+            {
+                throw new Exception();
+            }
+        }
+
     }
 }

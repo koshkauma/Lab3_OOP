@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Drawing;
 using System.ComponentModel;
+using System.IO;
 
 namespace lab_3.Classes.ForEyes
 {
@@ -47,6 +48,33 @@ namespace lab_3.Classes.ForEyes
 
         public Eyeshadow(int classIndex): base(classIndex)
         { }
+
+        public override void SerializeObject(StreamWriter outputFile, char separator)
+        {
+            base.SerializeObject(outputFile, separator);
+
+            outputFile.Write(EyeshadowTexture);
+            outputFile.Write(separator);
+            outputFile.Write(PackageType);
+            outputFile.Write(separator);
+        }
+
+
+        public override void DeserializeObject(List<string> data)
+        {
+            base.DeserializeObject(data);
+            try
+            {
+                EyeshadowTexture = (KindOfEyeshadow)Enum.Parse(typeof(KindOfEyeshadow), data[currentItemList]);
+                data.RemoveAt(currentItemList);
+                PackageType = (FormOfPackage)Enum.Parse(typeof(FormOfPackage), data[currentItemList]);
+                data.RemoveAt(currentItemList);
+            }
+            catch
+            {
+                throw new Exception();
+            }
+        }
     }
 }
 

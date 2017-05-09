@@ -53,7 +53,15 @@ namespace lab_3.Factories.NailFactories
             base.GetDataFromComponents(currentProduct, controls);
             Control[] controlList = GetComponentsForInput(controls);
             NailPolish currentNailPolish = (NailPolish)currentProduct;
-            currentNailPolish.Durability = Convert.ToInt32(controlList[durabilityIndex].Text);
+            try
+            {
+                currentNailPolish.Durability = Convert.ToInt32(controlList[durabilityIndex].Text);
+            }
+            catch
+            {
+                throw new Exception();
+            }
+
             ComboBox temp = (ComboBox)controlList[effectIndex];
             currentNailPolish.SpecialEffect = (NailPolish.TypesOfEffects)Enum.Parse(typeof(NailPolish.TypesOfEffects), temp.SelectedValue.ToString());
         }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Drawing;
 using System.ComponentModel;
+using System.IO;
 
 namespace lab_3.Classes
 {
@@ -35,5 +36,32 @@ namespace lab_3.Classes
 
         public LipPencil(int classIndex): base(classIndex)
         { }
+
+
+        public override void SerializeObject(StreamWriter outputFile, char separator)
+        {
+            base.SerializeObject(outputFile, separator);
+
+            outputFile.Write(PencilDevice);
+            outputFile.Write(separator);
+            outputFile.Write(PencilTexture);
+            outputFile.Write(separator);
+        }
+
+        public override void DeserializeObject(List<string> data)
+        {
+            base.DeserializeObject(data);
+            try
+            { 
+                PencilDevice = (TypeOfPencil)Enum.Parse(typeof(TypeOfPencil), data[currentItemList]);
+                data.RemoveAt(currentItemList);
+                PencilTexture = (TypeOfTexture)Enum.Parse(typeof(TypeOfTexture), data[currentItemList]);
+                data.RemoveAt(currentItemList);
+            }
+            catch
+            {
+                throw new Exception();
+            }
+        }
     }
 }

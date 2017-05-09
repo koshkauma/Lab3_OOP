@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Drawing;
 using System.ComponentModel;
+using System.IO;
 
 namespace lab_3.Classes.ForEyes
 {
@@ -47,5 +48,36 @@ namespace lab_3.Classes.ForEyes
         public Mascara(int classIndex): base(classIndex)
         { }
 
+
+        public override void SerializeObject(StreamWriter outputFile, char separator)
+        {
+            base.SerializeObject(outputFile, separator);
+
+            outputFile.Write(Effect);
+            outputFile.Write(separator);
+            outputFile.Write(BrushMaterial);
+            outputFile.Write(separator);
+            outputFile.Write(BrushForm);
+            outputFile.Write(separator);
+        }
+
+
+        public override void DeserializeObject(List<string> data)
+        {
+            base.DeserializeObject(data);
+            try
+            {
+                Effect = data[currentItemList];
+                data.RemoveAt(currentItemList);
+                BrushMaterial = (MaterialOfBrush)Enum.Parse(typeof(MaterialOfBrush), data[currentItemList]);
+                data.RemoveAt(currentItemList);
+                BrushForm = (FormOfBrush)Enum.Parse(typeof(FormOfBrush), data[currentItemList]);
+                data.RemoveAt(currentItemList);
+            }
+            catch
+            {
+                throw new Exception();
+            }
+        }
     }
 }

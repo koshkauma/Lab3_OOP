@@ -10,6 +10,7 @@ namespace lab_3.Classes
 {
     public class CosmeticProduct
     {
+        public const int currentItemList = 0;
         public string ProductName { get; set; }
         public string Brand { get; set; }
         public enum PriceCategory
@@ -44,8 +45,46 @@ namespace lab_3.Classes
             this.Brand = brand;
             this.PriceCategoryOfProduct = priceCategoryOfProduct;
             this.Color = Color;
+          
         }
 
+        public virtual void SerializeObject(StreamWriter outputFile, char separator)
+        {
+            outputFile.Write(ClassIndex);
+            outputFile.Write(separator);
+            outputFile.Write(ProductName);
+            outputFile.Write(separator);
+            outputFile.Write(Brand);
+            outputFile.Write(separator);
+            outputFile.Write(PriceCategoryOfProduct);
+            outputFile.Write(separator);
+            int rgbColor = Color.ToArgb();
+            outputFile.Write(rgbColor);
+            outputFile.Write(separator);
+        }
+
+
+        public virtual void DeserializeObject(List<string> data)
+        {
+            try
+            {
+                ProductName = data[currentItemList];
+                data.RemoveAt(currentItemList);
+                Brand = data[currentItemList];
+                data.RemoveAt(currentItemList);
+
+                PriceCategoryOfProduct = (PriceCategory)Enum.Parse(typeof(PriceCategory), data[currentItemList]);
+                data.RemoveAt(currentItemList);
+
+                int rgbColor = Convert.ToInt32(data[currentItemList]);
+                Color = Color.FromArgb(rgbColor);
+                data.RemoveAt(currentItemList);
+            }
+            catch
+            {
+                throw new Exception();
+            }
+        }
     }
     
 }
